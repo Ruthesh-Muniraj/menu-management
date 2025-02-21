@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useAppDispatch, useAppSelector } from "../../redux/hook"; // adjust path as needed
+import { useAppDispatch, useAppSelector } from "../../redux/hooks"; // adjust path as needed
 import { fetchMenus } from "../../redux/slices/menuSlice";
 
 interface MenuItem {
@@ -11,6 +11,72 @@ interface MenuItem {
   parentId?: string;
   children?: MenuItem[];
 }
+
+interface MenuItemProps {
+  menu: MenuItem;
+  handleOpenModal: (parentId: string | null) => void;
+}
+
+const MenuItemComponent: React.FC<MenuItemProps> = ({ menu, handleOpenModal }) => {
+  const [expanded, setExpanded] = useState(true);
+
+  return (
+    <li className="relative pl-4 border-l border-gray-300">
+      <div className="flex items-center justify-between py-2">
+        <div className="flex items-center">
+          {/* Caret icon only if the item has children */}
+          {menu.children && menu.children.length > 0 && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="mr-2 focus:outline-none"
+              aria-label={expanded ? "Collapse" : "Expand"}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`w-4 h-4 transform transition-transform duration-200 ${
+                  expanded ? "rotate-90" : ""
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          )}
+          {/* Render a horizontal connector line only for non-root items */}
+          {menu.parentId && (
+            <span className="w-4 border-t border-gray-300 mr-2 block" />
+          )}
+          <span className="text-gray-800">{menu.name}</span>
+        </div>
+        <button
+          onClick={() => handleOpenModal(menu.id)}
+          className="flex items-center justify-center w-6 h-6 text-white bg-blue-500 rounded-full hover:bg-blue-600"
+          aria-label="Add Sub Menu"
+        >
+          +
+        </button>
+      </div>
+      {expanded && menu.children && menu.children.length > 0 && (
+        <ul className="ml-4">
+          {menu.children.map((child) => (
+            <MenuItemComponent
+              key={child.id}
+              menu={child}
+              handleOpenModal={handleOpenModal}
+            />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+};
 
 export default function MenusPage() {
   const dispatch = useAppDispatch();
@@ -45,28 +111,6 @@ export default function MenusPage() {
     }
   };
 
-  // Recursively render the menu tree
-  const renderMenuTree = (menu: MenuItem) => {
-    return (
-      <li key={menu.id} className="pl-4 border-l border-gray-300">
-        <div className="flex items-center justify-between py-2">
-          <span className="text-gray-800">{menu.name}</span>
-          <button
-            onClick={() => handleOpenModal(menu.id)}
-            className="flex items-center justify-center w-6 h-6 text-white bg-blue-500 rounded-full hover:bg-blue-600"
-          >
-            +
-          </button>
-        </div>
-        {menu.children && menu.children.length > 0 && (
-          <ul className="ml-4">
-            {menu.children.map((child) => renderMenuTree(child))}
-          </ul>
-        )}
-      </li>
-    );
-  };
-
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Menu Management</h1>
@@ -82,7 +126,12 @@ export default function MenusPage() {
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
           </svg>
           Add Root Menu
         </button>
@@ -92,7 +141,11 @@ export default function MenusPage() {
       ) : error ? (
         <p className="text-red-500">Error: {error}</p>
       ) : (
-        <ul>{menus.map((menu: MenuItem) => renderMenuTree(menu))}</ul>
+        <ul>
+          {menus.map((menu: MenuItem) => (
+            <MenuItemComponent key={menu.id} menu={menu} handleOpenModal={handleOpenModal} />
+          ))}
+        </ul>
       )}
 
       {/* Modal for adding a new menu item */}
