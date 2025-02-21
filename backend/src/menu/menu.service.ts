@@ -14,7 +14,11 @@ export class MenuService {
       include: {
         children: {
           include: {
-            children: true,
+            children: {
+              include: {
+                children: true,
+              },
+            },
           },
         },
       },
