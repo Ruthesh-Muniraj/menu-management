@@ -32,11 +32,16 @@ export class MenuController {
 
   @Put(':id')
   updateMenu(@Param('id') id: string, @Body() dto: UpdateMenuDto) {
-    return this.menuService.updateMenu(id, dto);
+    return this.menuService.updateMenu(dto);
   }
 
   @Delete(':id')
   deleteMenu(@Param('id') id: string) {
     return this.menuService.deleteMenu(id);
+  }
+
+  @Get(':id/specific')
+  getSpecificMenu(@Param('id') id: string) {
+    return this.menuService.getSpecificMenu(id);
   }
 }

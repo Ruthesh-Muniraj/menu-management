@@ -1,4 +1,5 @@
 export class UpdateMenuDto {
-  name?: string;
-  parentId?: string;
+  selectedMenuId: string;
+  selectedMenuName: string;
+  parentMenuName?: string;
 }
