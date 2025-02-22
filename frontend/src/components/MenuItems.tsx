@@ -1,44 +1,55 @@
-// frontend/components/MenuItemComponent.tsx
 "use client";
 
-import React, { useState } from "react";
-import type { MenuItem } from "@/types/menu";
+import React, { useState, useEffect } from "react";
+import type { MenuItem } from "../types/menu";
 
 export interface MenuItemComponentProps {
   menu: MenuItem;
-  /**
-   * Called when the plus button is clicked to add a sub-menu.
-   */
   handleOpenModal: (parentId: string | null) => void;
-  /**
-   * Called when the menu item itself is clicked to display details.
-   */
   handleIndividualMenu: (id: string) => void;
+  expandAllTrigger: number;
+  collapseAllTrigger: number;
+  selectedMenuId: string | null;
 }
-
+ 
 /**
- * Renders a menu item with an expandable list of children.
- *
- * @param {MenuItemComponentProps} props - Component props.
- * @returns {JSX.Element}
+ * Renders a menu item (and its children) with the ability to expand/collapse.
+ * The component also listens for global "expand all" or "collapse all" triggers.
  */
 const MenuItemComponent: React.FC<MenuItemComponentProps> = ({
   menu,
   handleOpenModal,
   handleIndividualMenu,
+  expandAllTrigger,
+  collapseAllTrigger,
+  selectedMenuId,
 }) => {
   const [expanded, setExpanded] = useState(true);
 
+  // Whenever expandAllTrigger increments, expand this node.
+  useEffect(() => {
+    setExpanded(true);
+  }, [expandAllTrigger]);
+
+  // Whenever collapseAllTrigger increments, collapse this node.
+  useEffect(() => {
+    setExpanded(false);
+  }, [collapseAllTrigger]);
+
+  const isSelected = selectedMenuId === menu.id;
+
   return (
-    <li className="relative pl-4 border-l border-gray-300 cursor-pointer">
+    <li className="w-64 relative pl-4 border-l border-gray-300 cursor-pointer">
       <div className="flex items-center justify-between py-2">
         <div
           className="flex items-center"
           onClick={() => handleIndividualMenu(menu.id)}
         >
+          {/* Caret icon only if the item has children */}
           {menu.children && menu.children.length > 0 && (
             <button
               onClick={(e) => {
+                // Prevent this click from triggering handleIndividualMenu
                 e.stopPropagation();
                 setExpanded(!expanded);
               }}
@@ -63,6 +74,7 @@ const MenuItemComponent: React.FC<MenuItemComponentProps> = ({
               </svg>
             </button>
           )}
+          {/* Horizontal connector for non-root items */}
           {menu.parentId && (
             <span className="w-4 border-t border-gray-300 mr-2 block" />
           )}
@@ -73,7 +85,11 @@ const MenuItemComponent: React.FC<MenuItemComponentProps> = ({
             e.stopPropagation();
             handleOpenModal(menu.id);
           }}
-          className="flex items-center justify-center w-6 h-6 text-white bg-blue-500 rounded-full hover:bg-blue-600"
+          className={`
+            flex items-center justify-center w-6 h-6 text-white bg-blue-500 rounded-full hover:bg-blue-600
+            transition-opacity
+            ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"}
+          `}
           aria-label="Add Sub Menu"
         >
           +
@@ -87,6 +103,9 @@ const MenuItemComponent: React.FC<MenuItemComponentProps> = ({
               menu={child}
               handleOpenModal={handleOpenModal}
               handleIndividualMenu={handleIndividualMenu}
+              expandAllTrigger={expandAllTrigger}
+              collapseAllTrigger={collapseAllTrigger}
+              selectedMenuId={selectedMenuId}
             />
           ))}
         </ul>

@@ -151,7 +151,7 @@ const IndividualMenu: React.FC<IndividualMenuProps> = ({ menuId }) => {
       {/* Save button */}
       <button
         onClick={handleSave}
-        className="w-full py-8 text-white bg-blue-500 rounded hover:bg-blue-700 transition-colors"
+        className="w-full py-3 text-white bg-blue-500 rounded-full hover:bg-blue-700 transition-colors"
       >
         Save
       </button>
