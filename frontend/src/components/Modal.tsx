@@ -29,7 +29,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
             className="text-gray-600 hover:text-gray-800 focus:outline-none"
             aria-label="Close Modal"
           >
-            ×
+            x
           </button>
         </div>
         {children}

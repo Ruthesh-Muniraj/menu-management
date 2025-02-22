@@ -38,13 +38,11 @@ const IndividualMenu: React.FC<IndividualMenuProps> = ({ menuId }) => {
 
         const BASE_URL =
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-        // Adjust endpoint as needed, e.g. GET /menus/:id
         const response = await axios.get(
           `${BASE_URL}/menus/${menuId}/specific`
         );
 
         console.log(response.data);
-        // Suppose the response returns { id, depth, parentData, name }
         setMenu({
           id: response.data.id,
           depth: response.data.depth,
@@ -71,9 +69,9 @@ const IndividualMenu: React.FC<IndividualMenuProps> = ({ menuId }) => {
   const handleSave = async () => {
     if (!menu) return;
     const payload = {
-      selectedMenuId: menu.id, // e.g., from state or route params
-      selectedMenuName: menu.name, // new name entered in the form
-      parentMenuName: menu.parentData, // new name for parent, if applicable
+      selectedMenuId: menu.id, 
+      selectedMenuName: menu.name, 
+      parentMenuName: menu.parentData,
     };
     try {
       setLoading(true);
@@ -109,7 +107,7 @@ const IndividualMenu: React.FC<IndividualMenuProps> = ({ menuId }) => {
 
   // Render the form
   return (
-    <div className="p-6 max-w-lg mx-auto">
+    <div className="p-6 pt-0 max-sm:pt-6 max-w-lg mx-auto">
       {/* Menu ID (read-only) */}
       <label className="block text-sm text-gray-600 mb-1">Menu ID</label>
       <input
@@ -117,7 +115,7 @@ const IndividualMenu: React.FC<IndividualMenuProps> = ({ menuId }) => {
         type="text"
         readOnly
         value={menu.id}
-        className="w-full mb-4 px-4 py-2 border border-gray-300 rounded bg-gray-100 cursor-not-allowed"
+        className="w-full mb-4 px-4 py-2 bg-gray-50 rounded-xl bg-gray-100 cursor-not-allowed"
       />
 
       {/* Depth */}
@@ -127,7 +125,7 @@ const IndividualMenu: React.FC<IndividualMenuProps> = ({ menuId }) => {
         type="number"
         value={menu.depth}
         onChange={(e) => setMenu({ ...menu, depth: +e.target.value })}
-        className="w-full mb-4 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+        className="w-full mb-4 px-4 py-2 bg-gray-100 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500"
       />
 
       {/* Parent Data */}
@@ -136,7 +134,7 @@ const IndividualMenu: React.FC<IndividualMenuProps> = ({ menuId }) => {
         type="text"
         value={menu.parentData || ""}
         onChange={(e) => setMenu({ ...menu, parentData: e.target.value })}
-        className="w-full mb-4 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+        className="w-full mb-4 px-4 py-2 bg-gray-50 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500"
       />
 
       {/* Name */}
@@ -145,7 +143,7 @@ const IndividualMenu: React.FC<IndividualMenuProps> = ({ menuId }) => {
         type="text"
         value={menu.name}
         onChange={(e) => setMenu({ ...menu, name: e.target.value })}
-        className="w-full mb-4 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+        className="w-full mb-4 px-4 py-2 bg-gray-50 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500"
       />
 
       {/* Save button */}

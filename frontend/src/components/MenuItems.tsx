@@ -26,12 +26,10 @@ const MenuItemComponent: React.FC<MenuItemComponentProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(true);
 
-  // Whenever expandAllTrigger increments, expand this node.
   useEffect(() => {
     setExpanded(true);
   }, [expandAllTrigger]);
 
-  // Whenever collapseAllTrigger increments, collapse this node.
   useEffect(() => {
     setExpanded(false);
   }, [collapseAllTrigger]);

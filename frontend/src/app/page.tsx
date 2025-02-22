@@ -7,8 +7,10 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { fetchMenus } from "../../redux/slices/menuSlice";
 import MenuItemComponent from "@/components/MenuItems";
 import IndividualMenu from "@/components/IndidualMenu";
-import type { MenuItem } from "@/types/menu";
 import Modal from "@/components/Modal";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import type { MenuItem } from "@/types/menu";
+import Image from "next/image";
 
 /**
  * Main page for managing menus, with:
@@ -94,15 +96,31 @@ const MenusPage: React.FC = () => {
     ? allMenus.filter((m) => m.id === selectedRootId)
     : allMenus;
 
+  const breadcrumbsData = [
+    { label: "Menus", href: "/" },
+    // Enable more routes by adding json here
+  ];
+
   return (
-    <div className="mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Menus</h1>
+    <div className="p-6 w-auto">
+      <div className="ml-3 mb-6">
+        <Breadcrumbs paths={breadcrumbsData} />
+        <div className="flex items-center">
+          <Image
+            src="/submenu-filled.png"
+            width={36}
+            height={36}
+            alt="submenu icon"
+          />
+          <h1 className="text-4xl font-bold ml-2">Menu</h1>
+        </div>
+      </div>
 
       {/* Select Root Menu */}
       <div className="flex flex-col space-x-4 w-64 mb-6">
         <button
           onClick={() => handleOpenModal(null)}
-          className="ml-3 flex items-center px-4 py-2 text-white bg-blue-500 rounded-full hover:bg-blue-600"
+          className="ml-3 mb-6 flex items-center px-4 py-2 hover:text-white bg-gray-100 rounded-full hover:bg-blue-600"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -122,7 +140,7 @@ const MenusPage: React.FC = () => {
         </button>
         <label className="font-semibold">Menu</label>
         <select
-          className="border px-2 py-1 rounded"
+          className="bg-gray-100 px-4 py-2 rounded-xl"
           value={selectedRootId}
           onChange={(e) => setSelectedRootId(e.target.value)}
         >
@@ -135,7 +153,7 @@ const MenusPage: React.FC = () => {
         </select>
       </div>
 
-      <div className="flex items-center space-x-4 mb-6">
+      <div className="flex items-center space-x-4 mb-6 ml-3">
         {/* Expand/Collapse All Buttons */}
         <button
           onClick={handleExpandAll}
@@ -145,14 +163,14 @@ const MenusPage: React.FC = () => {
         </button>
         <button
           onClick={handleCollapseAll}
-          className="px-3 py-1 bg-gray-200 rounded-full hover:bg-gray-300"
+          className="px-3 py-1 bg-gray-100 rounded-full hover:bg-gray-300"
         >
           Collapse All
         </button>
       </div>
 
       {/* Main Content: Tree + Individual Menu Details */}
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-x-20 ml-3">
         {/* Left Section: Menu Tree */}
         <div className="md:w-1/2">
           {loading ? (
